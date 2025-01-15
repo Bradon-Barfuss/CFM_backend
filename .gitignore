@@ -1,0 +1,10 @@
+*.pyc
+__pycache__/
+*.db
+*.log
+.env
+venv/
+instance/
+web/static/
+web/templates/
+*.sqlite3
