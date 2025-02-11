@@ -11,6 +11,8 @@ CSV_FILE = "users.csv"
 from fastapi.middleware.cors import CORSMiddleware
 
 
+
+
 # Enable CORS for React frontend
 app.add_middleware(
     CORSMiddleware,
@@ -19,6 +21,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
 
 # Create CSV file if it doesn't exist
 if not os.path.exists(CSV_FILE):
