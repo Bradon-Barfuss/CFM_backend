@@ -1,21 +1,3 @@
-#from fastapi import FastAPI
-#from fastapi.middleware.cors import CORSMiddleware
-#from app.routes import components
-
-#app = FastAPI()
-
-# Enable CORS for React frontend
-#app.add_middleware(
-#    CORSMiddleware,
-#    allow_origins=["*"],  # Replace "*" with your React app URL in production
-#    allow_credentials=True,
-#    allow_methods=["*"],
-#    allow_headers=["*"],
-#)
-
-# Include routes
-#app.include_router(components.router, prefix="/components")
-
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import csv
@@ -28,9 +10,6 @@ CSV_FILE = "users.csv"
 
 from fastapi.middleware.cors import CORSMiddleware
 
-
-
-
 # Enable CORS for React frontend
 app.add_middleware(
     CORSMiddleware,
@@ -39,7 +18,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # Create CSV file if it doesn't exist
 if not os.path.exists(CSV_FILE):
@@ -66,7 +44,14 @@ def read_users():
 @app.post("/login")
 async def login(request: LoginRequest):
     users = read_users()
-        with open(CSV_FILE, mode="a", newline="") as file:
-            writer = csv.writer(file)
-            writer.writerow([request.username, request.password)]
-        return {"message": "User registered successfully"}
+
+    # Check if user already exists
+    if request.username in users:
+        return {"message": "User already exists"}
+
+    # Write new user to CSV file
+    with open(CSV_FILE, mode="a", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow([request.username, request.password])  # ⚠️ Hash password in real-world apps
+
+    return {"message": "User registered successfully"}
